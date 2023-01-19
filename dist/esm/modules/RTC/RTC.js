@@ -84,6 +84,7 @@ export default class RTC extends Listenable {
         // @private
         // @type {BridgeChannel}
         this._channel = null;
+        /* test comment */
         /**
          * The value specified to the last invocation of setLastN before the
          * channel completed opening. If non-null, the value will be sent
