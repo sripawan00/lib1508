@@ -40,7 +40,7 @@ export class CodecSelection {
 
         // Check if the codec values passed are valid.
         const jvbCodec = this._getCodecMimeType(options.jvbCodec);
-        const p2pCodec = CodecMimeType.H264;
+        const p2pCodec = CodecMimeType.VP8;
 
         this.jvbPreferredCodec = jvbCodec && this._isCodecSupported(jvbCodec) ? jvbCodec : CodecMimeType.VP8;
         this.p2pPreferredCodec = p2pCodec && this._isCodecSupported(p2pCodec) ? p2pCodec : CodecMimeType.VP8;
@@ -111,7 +111,7 @@ export class CodecSelection {
         const disabledCodec = this.disabledCodec && this._isCodecSupported(this.disabledCodec)
             ? this.disabledCodec
             : null;
-
+            
         this._selectPreferredCodec(mediaSession, preferredCodec, disabledCodec);
     }
 
