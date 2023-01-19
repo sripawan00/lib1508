@@ -40,7 +40,7 @@ export class CodecSelection {
 
         // Check if the codec values passed are valid.
         const jvbCodec = this._getCodecMimeType(options.jvbCodec);
-        const p2pCodec = this._getCodecMimeType(options.p2pCodec);
+        const p2pCodec = CodecMimeType.H264;
 
         this.jvbPreferredCodec = jvbCodec && this._isCodecSupported(jvbCodec) ? jvbCodec : CodecMimeType.VP8;
         this.p2pPreferredCodec = p2pCodec && this._isCodecSupported(p2pCodec) ? p2pCodec : CodecMimeType.VP8;
@@ -106,6 +106,7 @@ export class CodecSelection {
      * @private
      */
     _onMediaSessionStarted(mediaSession) {
+      logger.debug(`Codec preferences for on media started`);
         const preferredCodec = mediaSession.isP2P ? this.p2pPreferredCodec : this.jvbPreferredCodec;
         const disabledCodec = this.disabledCodec && this._isCodecSupported(this.disabledCodec)
             ? this.disabledCodec
@@ -126,7 +127,11 @@ export class CodecSelection {
         const session = mediaSession ? mediaSession : this.conference.jvbJingleSession;
         const currentCodec = preferredCodec ? preferredCodec : this.jvbPreferredCodec;
         let selectedCodec = currentCodec;
-
+         if(session.isP2P) {
+           logger.debug(`Codec preferences for P2P`);
+         }else{
+           logger.debug(`Codec preferences JVB`);
+         }
         if (session && !session.isP2P && !this.options.enforcePreferredCodec) {
             const remoteParticipants = this.conference.getParticipants().map(participant => participant.getId());
 
