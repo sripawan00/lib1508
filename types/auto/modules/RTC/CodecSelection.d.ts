@@ -36,13 +36,7 @@ export class CodecSelection {
         VP8: string;
         VP9: string;
     };
-    p2pPreferredCodec: string | {
-        H264: string;
-        OPUS: string;
-        ULPFEC: string;
-        VP8: string;
-        VP9: string;
-    };
+    p2pPreferredCodec: string;
     /**
      * Checks if a given string is a valid video codec mime type.
      *
