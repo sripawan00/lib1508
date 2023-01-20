@@ -2128,6 +2128,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function (description) 
     remoteDescription = this._mungeCodecOrder(remoteDescription);
     remoteDescription = this._setVp9MaxBitrates(remoteDescription);
     remoteDescription = this._setBandWithForVideo(remoteDescription);
+    logger.log(` inytelog`, dumpSDP(description));
     this.trace('setRemoteDescription::postTransform (munge codec order)', dumpSDP(remoteDescription));
     return new Promise((resolve, reject) => {
         this.peerconnection.setRemoteDescription(remoteDescription)
@@ -2151,6 +2152,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function (description) 
 */
 TraceablePeerConnection.prototype._setBandWithForVideo = function (description, isLocalSDP = false) {
     if (this.isP2P) {
+        logger.log(` inytelog, in P2P setBandWidth`);
         const customParsedSDP = transform.parse(description.sdp);
         const direction = isLocalSDP ? MediaDirection.RECVONLY : MediaDirection.SENDONLY;
         const mLines = customParsedSDP.media.filter(m = m.type === MediaType.VIDEO && m.direction !== direction);

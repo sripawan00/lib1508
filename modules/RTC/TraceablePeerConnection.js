@@ -2574,7 +2574,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
         this.trace('setRemoteDescription::postTransform (correct ssrc order)', dumpSDP(remoteDescription));
     } else {
         if (this.isSimulcastOn()) {
-          
+
             // Implode the simulcast ssrcs so that the remote sdp has only the first ssrc in the SIM group.
             remoteDescription = this.simulcast.mungeRemoteDescription(
                 remoteDescription,
@@ -2588,6 +2588,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
     remoteDescription = this._mungeCodecOrder(remoteDescription);
     remoteDescription = this._setVp9MaxBitrates(remoteDescription);
     remoteDescription = this._setBandWithForVideo(remoteDescription);
+     logger.log(` inytelog`, dumpSDP(description));
     this.trace('setRemoteDescription::postTransform (munge codec order)', dumpSDP(remoteDescription));
 
 
@@ -2621,7 +2622,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
 TraceablePeerConnection.prototype._setBandWithForVideo = function(description, isLocalSDP = false) {
 
    if (this.isP2P) {
-
+      logger.log(` inytelog, in P2P setBandWidth`);
      const customParsedSDP = transform.parse(description.sdp);
      const direction = isLocalSDP ? MediaDirection.RECVONLY : MediaDirection.SENDONLY;
      const mLines = customParsedSDP.media.filter(m = m.type === MediaType.VIDEO && m.direction !== direction)
