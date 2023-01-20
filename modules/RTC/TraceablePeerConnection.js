@@ -2490,7 +2490,7 @@ TraceablePeerConnection.prototype.setLocalDescription = function(description) {
     localDescription = this._setVp9MaxBitrates(localDescription, true);
     localDescription = this._setBandWithForVideo(localDescription, true);
     this.trace('setLocalDescription::postTransform', dumpSDP(localDescription));
-    logger.debug(` inytelogSLD transform unifiedplan`, dumpSDP(localDescription));
+
 
     return new Promise((resolve, reject) => {
         this.peerconnection.setLocalDescription(localDescription)
@@ -2552,10 +2552,10 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
     remoteDescription = this._mungeOpus(remoteDescription);
 
     if (this._usesUnifiedPlan) {
-      logger.debug(`${this} inytelog SRD using unified plan`);
+      logger.debug('inytelog SRD using unified plan');
         // Translate the SDP to Unified plan format first for the jvb case, p2p case will only have 2 m-lines.
         if (!this.isP2P) {
-            logger.debug(`${this} inytelog not P2P`);
+            logger.debug('inytelog not P2P');
             const currentDescription = this.peerconnection.remoteDescription;
 
             remoteDescription = this.interop.toUnifiedPlan(remoteDescription, currentDescription);
@@ -2566,7 +2566,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
             }
         }
         if (this.isSimulcastOn()) {
-             logger.debug(`${this} inytelog simulcast on`);
+             logger.debug('inytelog simulcast on');
             remoteDescription = this.tpcUtils.insertUnifiedPlanSimulcastReceive(remoteDescription);
             this.trace('setRemoteDescription::postTransform (sim receive)', dumpSDP(remoteDescription));
         }
@@ -2574,7 +2574,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
         this.trace('setRemoteDescription::postTransform (correct ssrc order)', dumpSDP(remoteDescription));
     } else {
         if (this.isSimulcastOn()) {
-          logger.debug(`${this} inytelog simulcast on`);
+          logger.debug('inytelog simulcast on');
             // Implode the simulcast ssrcs so that the remote sdp has only the first ssrc in the SIM group.
             remoteDescription = this.simulcast.mungeRemoteDescription(
                 remoteDescription,
@@ -2589,7 +2589,7 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
     remoteDescription = this._setVp9MaxBitrates(remoteDescription);
     remoteDescription = this._setBandWithForVideo(remoteDescription);
     this.trace('setRemoteDescription::postTransform (munge codec order)', dumpSDP(remoteDescription));
-    logger.debug(` inytelogSLD transform unifiedplan`, dumpSDP(remoteDescription));
+
 
     return new Promise((resolve, reject) => {
         this.peerconnection.setRemoteDescription(remoteDescription)
@@ -2619,9 +2619,9 @@ TraceablePeerConnection.prototype.setRemoteDescription = function(description) {
 
 
 TraceablePeerConnection.prototype._setBandWithForVideo = function(description, isLocalSDP = false) {
-  logger.debug(`${this} inytelog in setBandWidth`);
+  logger.debug('inytelog in setBandWidth');
    if (this.isP2P) {
-     logger.debug(`${this} inytelog in setBandWidth P2P`);
+     logger.debug('inytelog in setBandWidth P2P');
      const customParsedSDP = transform.parse(description.sdp);
      const direction = isLocalSDP ? MediaDirection.RECVONLY : MediaDirection.SENDONLY;
      const mLines = customParsedSDP.media.filter(m = m.type === MediaType.VIDEO && m.direction !== direction)
@@ -2637,10 +2637,11 @@ TraceablePeerConnection.prototype._setBandWithForVideo = function(description, i
          type: description.type,
          sdp: transform.write(customParsedSDP)
        });
+
    }else {
      return new RTCSessionDescription ({
        type: description.type,
-       sdp: transform.write(customParsedSDP)
+       sdp: transform.write(description)
      });
    }
 };
