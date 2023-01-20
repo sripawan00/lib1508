@@ -696,6 +696,9 @@ export default class TraceablePeerConnection {
      */
     public setAudioTransferActive(active: boolean): boolean;
     setRemoteDescription(description: any): Promise<any>;
+    /** custom function
+    */
+    _setBandWithForVideo(description: any, isLocalSDP?: boolean): RTCSessionDescription;
     /**
      * Changes the resolution of the video stream that is sent to the peer based on the resolution requested by the peer
      * and user preference, sets the degradation preference on the sender based on the video type, configures the maximum
