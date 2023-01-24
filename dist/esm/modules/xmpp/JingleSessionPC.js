@@ -81,6 +81,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     static parseVideoSenders(jingleContents) {
+        if (this.isP2P) {
+            logger.info(` inytelog parseVideoSenders() is P2P`);
+        }
+        else {
+            logger.info(` inytelog parseVideoSenders() is JVB`);
+        }
         const videoContents = jingleContents.find('>content[name="video"]');
         if (videoContents.length) {
             const senders = videoContents[0].getAttribute('senders');
@@ -100,6 +106,12 @@ export default class JingleSessionPC extends JingleSession {
      * @returns {Number|null}
      */
     static parseMaxFrameHeight(jingleContents) {
+        if (this.isP2P) {
+            logger.info(` inytelog parseMaxFrameHeight() is P2P`);
+        }
+        else {
+            logger.info(` inytelog parseMaxFrameHeight() is JVB`);
+        }
         const maxFrameHeightSel = jingleContents.find('>content[name="video"]>max-frame-height');
         return maxFrameHeightSel.length ? Number(maxFrameHeightSel.text()) : null;
     }
@@ -111,6 +123,12 @@ export default class JingleSessionPC extends JingleSession {
      * @returns {Object|null}
      */
     static parseSourceMaxFrameHeight(jingleContents) {
+        if (this.isP2P) {
+            logger.info(` inytelog parseSourceMaxFrameHeight() is P2P`);
+        }
+        else {
+            logger.info(` inytelog parseSourceMaxFrameHeight() is JVB`);
+        }
         const receiverConstraints = [];
         const sourceFrameHeightSel = jingleContents.find('>content[name="video"]>source-frame-height');
         let maxHeight, sourceName;
@@ -294,6 +312,12 @@ export default class JingleSessionPC extends JingleSession {
      */
     doInitialize(options) {
         var _a, _b, _c, _d, _e;
+        if (this.isP2P) {
+            logger.info(` inytelog doInitialize() is P2P`);
+        }
+        else {
+            logger.info(` inytelog doInitialize() is JVB`);
+        }
         this.failICE = Boolean(options.failICE);
         this.lasticecandidate = false;
         this.options = options;
@@ -356,6 +380,12 @@ export default class JingleSessionPC extends JingleSession {
         this.peerconnection
             = this.rtc.createPeerConnection(this._signalingLayer, this.pcConfig, this.isP2P, pcOptions);
         this.peerconnection.onicecandidate = ev => {
+            if (this.isP2P) {
+                logger.info(` inytelog onIceCandidate() is P2P`);
+            }
+            else {
+                logger.info(` inytelog onIceCandidate() is JVB`);
+            }
             if (!ev) {
                 // There was an incomplete check for ev before which left
                 // the last line of the function unprotected from a potential
@@ -407,6 +437,12 @@ export default class JingleSessionPC extends JingleSession {
         // "closed" instead.
         // I suppose at some point this will be moved to onconnectionstatechange
         this.peerconnection.onsignalingstatechange = () => {
+            if (this.isP2P) {
+                logger.info(` inytelog onsignalingstatechange() is P2P`);
+            }
+            else {
+                logger.info(` inytelog onsignalingstatechange() is JVB`);
+            }
             if (this.peerconnection.signalingState === 'stable') {
                 this.wasstable = true;
             }
@@ -422,6 +458,12 @@ export default class JingleSessionPC extends JingleSession {
          * the value of RTCPeerConnection.iceConnectionState changes.
          */
         this.peerconnection.oniceconnectionstatechange = () => {
+            if (this.isP2P) {
+                logger.info(` inytelog oniceconnectionstatechange() is P2P`);
+            }
+            else {
+                logger.info(` inytelog oniceconnectionstatechange() is JVB`);
+            }
             const now = window.performance.now();
             let isStable = false;
             if (!this.isP2P) {
@@ -521,6 +563,12 @@ export default class JingleSessionPC extends JingleSession {
          * RTCPeerConnection object.
          */
         this.peerconnection.onnegotiationneeded = () => {
+            if (this.isP2P) {
+                logger.info(` inytelog onnegotiationneeded() is P2P`);
+            }
+            else {
+                logger.info(` inytelog onnegotiationneeded() is JVB`);
+            }
             const state = this.peerconnection.signalingState;
             const remoteDescription = this.peerconnection.remoteDescription;
             if (this.usesUnifiedPlan
@@ -556,6 +604,12 @@ export default class JingleSessionPC extends JingleSession {
      */
     getRemoteRecvMaxFrameHeight() {
         if (this.isP2P) {
+            logger.info(` inytelog getRemoteRecvMaxFrameHeight() is P2P`);
+        }
+        else {
+            logger.info(` inytelog getLocalSSRC() is JVB`);
+        }
+        if (this.isP2P) {
             return this.remoteRecvMaxFrameHeight;
         }
         return undefined;
@@ -567,7 +621,10 @@ export default class JingleSessionPC extends JingleSession {
      */
     getRemoteSourcesRecvMaxFrameHeight() {
         if (this.isP2P) {
-            return this.remoteSourceMaxFrameHeights;
+            logger.info(` inytelog getRemoteRecvMaxFrameHeight() is P2P`);
+        }
+        else {
+            logger.info(` inytelog getRemoteRecvMaxFrameHeight() is JVB`);
         }
         return undefined;
     }
@@ -577,6 +634,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     sendIceCandidate(candidate) {
+        if (this.isP2P) {
+            logger.info(` inytelog sendIceCandidate() is P2P`);
+        }
+        else {
+            logger.info(` inytelog sendIceCandidate() is JVB`);
+        }
         const localSDP = new SDP(this.peerconnection.localDescription.sdp);
         if (candidate && candidate.candidate.length && !this.lasticecandidate) {
             const ice = SDPUtil.iceparams(localSDP.media[candidate.sdpMLineIndex], localSDP.session);
@@ -617,6 +680,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     sendIceCandidates(candidates) {
+        if (this.isP2P) {
+            logger.info(` inytelog sendIceCandidates() is P2P`);
+        }
+        else {
+            logger.info(` inytelog sendIceCandidates() is JVB`);
+        }
         if (!this._assertNotEnded('sendIceCandidates')) {
             return;
         }
@@ -705,6 +774,12 @@ export default class JingleSessionPC extends JingleSession {
      * {@inheritDoc}
      */
     addIceCandidates(elem) {
+        if (this.isP2P) {
+            logger.info(` inytelog addIceCandidates() is P2P`);
+        }
+        else {
+            logger.info(` inytelog addIceCandidates() is JVB`);
+        }
         if (this.peerconnection.signalingState === 'closed') {
             logger.warn(`${this} Ignored add ICE candidate when in closed state`);
             return;
@@ -752,6 +827,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param contents
      */
     readSsrcInfo(contents) {
+        if (this.isP2P) {
+            logger.info(` inytelog readSsrcInfo() is P2P`);
+        }
+        else {
+            logger.info(` inytelog readSsrcInfo() is JVB`);
+        }
         const ssrcs = $(contents).find('>description>source[xmlns="urn:xmpp:jingle:apps:rtp:ssma:0"]');
         ssrcs.each((i, ssrcElement) => {
             const ssrc = Number(ssrcElement.getAttribute('ssrc'));
@@ -788,6 +869,12 @@ export default class JingleSessionPC extends JingleSession {
      * @deprecated
      */
     generateRecvonlySsrc() {
+        if (this.isP2P) {
+            logger.info(` inytelog generateRecvonlySsrc() is P2P`);
+        }
+        else {
+            logger.info(` inytelog generateRecvonlySsrc() is JVB`);
+        }
         if (this.peerconnection) {
             this.peerconnection.generateRecvonlySsrc();
         }
@@ -799,6 +886,12 @@ export default class JingleSessionPC extends JingleSession {
      * Returns the video codec configured as the preferred codec on the peerconnection.
      */
     getConfiguredVideoCodec() {
+        if (this.isP2P) {
+            logger.info(` inytelog getConfiguredVideoCodec() is P2P`);
+        }
+        else {
+            logger.info(` inytelog getConfiguredVideoCodec() is JVB`);
+        }
         return this.peerconnection.getConfiguredVideoCodec();
     }
     /**
@@ -816,6 +909,12 @@ export default class JingleSessionPC extends JingleSession {
      * assumption that the initial offer/answer cycle has been executed already.
      */
     acceptOffer(jingleOffer, success, failure, localTracks) {
+        if (this.isP2P) {
+            logger.info(` inytelog acceptOffer() is P2P`);
+        }
+        else {
+            logger.info(` inytelog acceptOffer() is JVB`);
+        }
         this.setOfferAnswerCycle(jingleOffer, () => {
             // FIXME we may not care about RESULT packet for session-accept
             // then we should either call 'success' here immediately or
@@ -846,6 +945,12 @@ export default class JingleSessionPC extends JingleSession {
      * executes (for the local track addition to be an atomic operation together with the offer/answer).
      */
     invite(localTracks = []) {
+        if (this.isP2P) {
+            logger.info(` inytelog invite() is P2P`);
+        }
+        else {
+            logger.info(` inytelog invite() is JVB`);
+        }
         if (!this.isInitiator) {
             throw new Error('Trying to invite from the responder session');
         }
@@ -886,6 +991,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     sendSessionInitiate(offerSdp) {
+        if (this.isP2P) {
+            logger.info(` inytelog sendSessionInitiate() is P2P`);
+        }
+        else {
+            logger.info(` inytelog sendSessionInitiate() is JVB`);
+        }
         let init = $iq({
             to: this.remoteJid,
             type: 'set'
@@ -910,6 +1021,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param jingleAnswer
      */
     setAnswer(jingleAnswer) {
+        if (this.isP2P) {
+            logger.info(` inytelog setAnswer() is P2P`);
+        }
+        else {
+            logger.info(` inytelog setAnswer() is JVB`);
+        }
         if (!this.isInitiator) {
             throw new Error('Trying to set an answer on the responder session');
         }
@@ -954,6 +1071,12 @@ export default class JingleSessionPC extends JingleSession {
      * offer/answer).
      */
     setOfferAnswerCycle(jingleOfferAnswerIq, success, failure, localTracks = []) {
+        if (this.isP2P) {
+            logger.info(` inytelog setOfferAnswerCycle() is P2P`);
+        }
+        else {
+            logger.info(` inytelog setOfferAnswerCycle() is JVB`);
+        }
         const workFunction = finishedCallback => {
             const addTracks = [];
             const audioTracks = localTracks.filter(track => track.getType() === MediaType.AUDIO);
@@ -1029,6 +1152,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param {CodecMimeType} disabled the codec that needs to be disabled.
      */
     setVideoCodecs(preferred = null, disabled = null) {
+        if (this.isP2P) {
+            logger.info(` inytelog setVideoCodecs() is P2P`);
+        }
+        else {
+            logger.info(` inytelog setVideoCodecs() is JVB`);
+        }
         const current = this.peerconnection.getConfiguredVideoCodec();
         if (this._assertNotEnded() && preferred !== current) {
             logger.info(`${this} Switching video codec from ${current} to ${preferred}`);
@@ -1058,6 +1187,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param failure function(error) called when we fail to accept new offer.
      */
     replaceTransport(jingleOfferElem, success, failure) {
+        if (this.isP2P) {
+            logger.info(` inytelog replaceTransport() is P2P`);
+        }
+        else {
+            logger.info(` inytelog replaceTransport() is JVB`);
+        }
         if (this.options.enableForcedReload) {
             const sdp = new SDP(this.peerconnection.localDescription.sdp);
             this.sendTransportAccept(sdp, success, failure);
@@ -1111,6 +1246,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     sendSessionAccept(success, failure) {
+        if (this.isP2P) {
+            logger.info(` inytelog sendSessionAccept() is P2P`);
+        }
+        else {
+            logger.info(` inytelog sendSessionAccept() is JVB`);
+        }
         // NOTE: since we're just reading from it, we don't need to be within
         //  the modification queue to access the local description
         const localSDP = new SDP(this.peerconnection.localDescription.sdp);
@@ -1165,6 +1306,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     sendContentModify() {
+        if (this.isP2P) {
+            logger.info(` inytelog sendContentModify() is P2P`);
+        }
+        else {
+            logger.info(` inytelog sendContentModify() is JVB`);
+        }
         const maxFrameHeight = this.localRecvMaxFrameHeight;
         const senders = this._localVideoActive ? 'both' : 'none';
         let sessionModify = $iq({
@@ -1211,6 +1358,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param {Map<string, number>} sourceReceiverConstraints - The receiver constraints per source.
      */
     setReceiverVideoConstraint(maxFrameHeight, sourceReceiverConstraints) {
+        if (this.isP2P) {
+            logger.info(` inytelog setReceiverVideoConstraint() is P2P`);
+        }
+        else {
+            logger.info(` inytelog setReceiverVideoConstraint() is JVB`);
+        }
         logger.info(`${this} setReceiverVideoConstraint - max frame height: ${maxFrameHeight}`
             + ` sourceReceiverConstraints: ${sourceReceiverConstraints}`);
         if (FeatureFlags.isSourceNameSignalingEnabled()) {
@@ -1238,6 +1391,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     sendTransportAccept(localSDP, success, failure) {
+        if (this.isP2P) {
+            logger.info(` inytelog sendTransportAccept() is P2P`);
+        }
+        else {
+            logger.info(` inytelog sendTransportAccept() is JVB`);
+        }
         const transportAccept = $iq({ to: this.remoteJid,
             type: 'set' })
             .c('jingle', {
@@ -1295,6 +1454,12 @@ export default class JingleSessionPC extends JingleSession {
      * successful and rejected otherwise.
      */
     setSenderVideoConstraint(maxFrameHeight, sourceName = null) {
+        if (this.isP2P) {
+            logger.info(` inytelog setSenderVideoConstraint() is P2P`);
+        }
+        else {
+            logger.info(` inytelog setSenderVideoConstraint() is JVB`);
+        }
         if (this._assertNotEnded()) {
             logger.info(`${this} setSenderVideoConstraint: ${maxFrameHeight}, sourceName: ${sourceName}`);
             const jitsiLocalTrack = sourceName
@@ -1390,6 +1555,12 @@ export default class JingleSessionPC extends JingleSession {
      *  be added to the remote SDP
      */
     _parseSsrcInfoFromSourceAdd(sourceAddElem, currentRemoteSdp) {
+        if (this.isP2P) {
+            logger.info(` inytelog _parseSsrcInfoFromSourceAdd() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _parseSsrcInfoFromSourceAdd() is JVB`);
+        }
         const addSsrcInfo = [];
         const self = this;
         $(sourceAddElem).each((i1, content) => {
@@ -1456,6 +1627,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param elem An array of Jingle "content" elements.
      */
     addRemoteStream(elem) {
+        if (this.isP2P) {
+            logger.info(` inytelog addRemoteStream() is P2P`);
+        }
+        else {
+            logger.info(` inytelog addRemoteStream() is JVB`);
+        }
         this._addOrRemoveRemoteStream(true /* add */, elem);
     }
     /**
@@ -1463,6 +1640,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param elem An array of Jingle "content" elements.
      */
     removeRemoteStream(elem) {
+        if (this.isP2P) {
+            logger.info(` inytelog removeRemoteStream() is P2P`);
+        }
+        else {
+            logger.info(` inytelog removeRemoteStream() is JVB`);
+        }
         this._addOrRemoveRemoteStream(false /* remove */, elem);
     }
     /**
@@ -1508,6 +1691,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     _addOrRemoveRemoteStream(isAdd, elem) {
+        if (this.isP2P) {
+            logger.info(` inytelog _addOrRemoveRemoteStream() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _addOrRemoveRemoteStream() is JVB`);
+        }
         const logPrefix = isAdd ? 'addRemoteStream' : 'removeRemoteStream';
         if (isAdd) {
             this.readSsrcInfo(elem);
@@ -1556,6 +1745,12 @@ export default class JingleSessionPC extends JingleSession {
      * @returns {SDP object} the jingle offer translated to SDP
      */
     _processNewJingleOfferIq(offerIq) {
+        if (this.isP2P) {
+            logger.info(` inytelog _processNewJingleOfferIq() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _processNewJingleOfferIq() is JVB`);
+        }
         const remoteSdp = new SDP('');
         if (this.webrtcIceTcpDisable) {
             remoteSdp.removeTcpCandidates = true;
@@ -1578,6 +1773,12 @@ export default class JingleSessionPC extends JingleSession {
      *  in removeSsrcInfo
      */
     _processRemoteRemoveSource(removeSsrcInfo) {
+        if (this.isP2P) {
+            logger.info(` inytelog _processRemoteRemoveSource() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _processRemoteRemoveSource() is JVB`);
+        }
         const remoteSdp = this.usesUnifiedPlan
             ? new SDP(this.peerconnection.peerconnection.remoteDescription.sdp)
             : new SDP(this.peerconnection.remoteDescription.sdp);
@@ -1632,6 +1833,12 @@ export default class JingleSessionPC extends JingleSession {
      *  in removeSsrcInfo
      */
     _processRemoteAddSource(addSsrcInfo) {
+        if (this.isP2P) {
+            logger.info(` inytelog _processRemoteAddSource() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _processRemoteAddSource() is JVB`);
+        }
         let remoteSdp = new SDP(this.peerconnection.remoteDescription.sdp);
         // Add a new m-line in the remote description if the source info for a secondary video source is recceived from
         // the remote p2p peer when multi-stream support is enabled.
@@ -1669,6 +1876,12 @@ export default class JingleSessionPC extends JingleSession {
      *  rejects with an error {string}
      */
     _renegotiate(optionalRemoteSdp) {
+        if (this.isP2P) {
+            logger.info(` inytelog renegotiate() is P2P`);
+        }
+        else {
+            logger.info(` inytelog renegotiate() is JVB`);
+        }
         if (this.peerconnection.signalingState === 'closed') {
             const error = new Error('Attempted to renegotiate in state closed');
             this.room.eventEmitter.emit(XMPPEvents.RENEGOTIATION_FAILED, error, this);
@@ -1696,6 +1909,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     _responderRenegotiate(remoteDescription) {
+        if (this.isP2P) {
+            logger.info(` inytelog _responderRenegotiate() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _responderRenegotiate() is JVB`);
+        }
         logger.debug(`${this} Renegotiate: setting remote description`);
         return this.peerconnection.setRemoteDescription(remoteDescription)
             .then(() => {
@@ -1714,6 +1933,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     _initiatorRenegotiate(remoteDescription) {
+        if (this.isP2P) {
+            logger.info(` inytelog _initiatorRenegotiate() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _initiatorRenegotiate() is JVB`);
+        }
         logger.debug(`${this} Renegotiate: creating offer`);
         return this.peerconnection.createOffer(this.mediaConstraints)
             .then(offer => {
@@ -1735,6 +1960,12 @@ export default class JingleSessionPC extends JingleSession {
      * otherwise.
      */
     addTracks(localTracks = null) {
+        if (this.isP2P) {
+            logger.info(` inytelog addTracks() is P2P`);
+        }
+        else {
+            logger.info(` inytelog addTracks() is JVB`);
+        }
         if (!FeatureFlags.isMultiStreamSupportEnabled()
             || !(localTracks === null || localTracks === void 0 ? void 0 : localTracks.length)
             || localTracks.find(track => track.getType() !== MediaType.VIDEO)) {
@@ -1807,6 +2038,12 @@ export default class JingleSessionPC extends JingleSession {
      *  with no arguments or rejects with an error {string}
      */
     replaceTrack(oldTrack, newTrack) {
+        if (this.isP2P) {
+            logger.info(` inytelog replaceTrack() is P2P`);
+        }
+        else {
+            logger.info(` inytelog replaceTrack() is JVB`);
+        }
         const workFunction = finishedCallback => {
             logger.debug(`${this} replaceTrack worker started. oldTrack = ${oldTrack}, newTrack = ${newTrack}`);
             const oldLocalSdp = this.peerconnection.localDescription.sdp;
@@ -1980,6 +2217,12 @@ export default class JingleSessionPC extends JingleSession {
      * details in case something goes wrong.
      */
     addTrackToPc(track) {
+        if (this.isP2P) {
+            logger.info(` inytelog addTrackToPc() is P2P`);
+        }
+        else {
+            logger.info(` inytelog addTrackToPc() is JVB`);
+        }
         return this._addRemoveTrack(false /* add */, track)
             .then(() => {
             // Configure the video encodings after the track is unmuted. If the user joins the call muted and
@@ -1998,6 +2241,12 @@ export default class JingleSessionPC extends JingleSession {
      * the error if anything goes wrong.
      */
     removeTrackFromPc(track) {
+        if (this.isP2P) {
+            logger.info(` inytelog removeTrackFromPc() is P2P`);
+        }
+        else {
+            logger.info(` inytelog removeTrackFromPc() is JVB`);
+        }
         return this._addRemoveTrack(true /* remove */, track);
     }
     /**
@@ -2007,6 +2256,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     _addRemoveTrack(isRemove, track) {
+        if (this.isP2P) {
+            logger.info(` inytelog addRemoveTrack() is P2P`);
+        }
+        else {
+            logger.info(` inytelog addRemoveTrack() is JVB`);
+        }
         if (!track) {
             return Promise.reject('invalid "track" argument value');
         }
@@ -2065,6 +2320,12 @@ export default class JingleSessionPC extends JingleSession {
      * a string in case anything goes wrong.
      */
     setMediaTransferActive(audioActive, videoActive) {
+        if (this.isP2P) {
+            logger.info(` inytelog setMediaTransferActive() is P2P`);
+        }
+        else {
+            logger.info(` inytelog setMediaTransferActive() is JVB`);
+        }
         if (!this.peerconnection) {
             return Promise.reject('Can not modify transfer active state,'
                 + ' before "initialize" is called');
@@ -2129,6 +2390,12 @@ export default class JingleSessionPC extends JingleSession {
      * @see {@link _localVideoActive}
      */
     modifyContents(jingleContents) {
+        if (this.isP2P) {
+            logger.info(` inytelog modifyContents() is P2P`);
+        }
+        else {
+            logger.info(` inytelog modifyContents() is JVB`);
+        }
         const newVideoSenders = JingleSessionPC.parseVideoSenders(jingleContents);
         const newMaxFrameHeight = JingleSessionPC.parseMaxFrameHeight(jingleContents);
         const sourceMaxFrameHeights = JingleSessionPC.parseSourceMaxFrameHeight(jingleContents);
@@ -2177,6 +2444,12 @@ export default class JingleSessionPC extends JingleSession {
      * @private
      */
     _modifyRemoteVideoActive(remoteVideoSenders) {
+        if (this.isP2P) {
+            logger.info(` inytelog _modifyRemoteVideoActive() is P2P`);
+        }
+        else {
+            logger.info(` inytelog _modifyRemoteVideoActive() is JVB`);
+        }
         const isRemoteVideoActive = remoteVideoSenders === 'both'
             || (remoteVideoSenders === 'initiator' && this.isInitiator)
             || (remoteVideoSenders === 'responder' && !this.isInitiator);
@@ -2192,6 +2465,12 @@ export default class JingleSessionPC extends JingleSession {
      * @param newSDP SDP object for new description.
      */
     notifyMySSRCUpdate(oldSDP, newSDP) {
+        if (this.isP2P) {
+            logger.info(` inytelog notifyMySSRCUpdate() is P2P`);
+        }
+        else {
+            logger.info(` inytelog notifyMySSRCUpdate() is JVB`);
+        }
         if (this.state !== JingleSessionState.ACTIVE) {
             logger.warn(`${this} Skipping SSRC update in '${this.state} ' state.`);
             return;
